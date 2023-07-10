@@ -34,6 +34,9 @@ jobs:
           echo "using version tag ${GITHUB_REF:10}"
           echo ::set-output name=version::"${GITHUB_REF:10}"
       
+      - name: Add rustup target
+        run: rustup target add ${{ matrix.target }}
+      
       - name: Build
         run: cargo build --release --target ${{ matrix.target }}
         
