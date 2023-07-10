@@ -1,0 +1,96 @@
+on:
+  push:
+    tags:
+      - 'v*' # Run when tag matches v*, i.e. v1.0, v20.15.10
+
+name: Release
+
+env:
+  RELEASE_BIN: hello-world-rs
+  RELEASE_DIR: artifacts
+  GITHUB_REF: '${{ github.ref }}'
+  LINUX_AMD64_TARGET: x86_64-unknown-linux-musl
+
+jobs:
+  build:
+    name: Build artifacts
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-latest
+            rust: stable
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ matrix.rust }}
+      
+      - name: Query version number
+        id: get_version
+        shell: bash
+        run: |
+          echo "using version tag ${GITHUB_REF:10}"
+          echo ::set-output name=version::"${GITHUB_REF:10}"
+      
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }}
+        
+      - name: Create artifact directory
+        run: |
+          mkdir ${{ env.RELEASE_DIR }}
+          mkdir -p ${{ env.RELEASE_DIR }}/${{ env.RELEASE_BIN }}-${{ steps.get_version.outputs.VERSION }}-${{ matrix.target }}
+      
+      - name: Move binaries (Linux/MacOS)
+        if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
+        run: |
+          mv ./target/${{ matrix.target }}/release/${{ env.RELEASE_BIN }} ${{ env.RELEASE_DIR }}/${{ env.RELEASE_BIN }}-${{ steps.get_version.outputs.VERSION }}-${{ matrix.target }}/${{ env.RELEASE_BIN }}
+      
+      - name: Create tarball
+        shell: bash
+        run: 7z a -ttar -so -an ./${{ env.RELEASE_DIR }}/${{ env.RELEASE_BIN }}-${{ steps.get_version.outputs.VERSION }}-${{ matrix.target }} | 7z a -si ./${{ env.RELEASE_DIR }}/${{ env.RELEASE_BIN }}-${{ steps.get_version.outputs.VERSION }}-${{ matrix.target }}.tar.gz
+
+      - name: Upload Zip
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{ matrix.target }}
+          path: ./${{ env.RELEASE_DIR }}
+
+  release:
+    name: GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Query version number
+        id: get_version
+        shell: bash
+        run: |
+          echo "using version tag ${GITHUB_REF:10}"
+          echo ::set-output name=version::"${GITHUB_REF:10}"
+      
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          release_name: ${{ steps.get_version.outputs.VERSION }}
+
+      - name: Download Linux amd64 tarball
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.LINUX_AMD64_TARGET }}
+      
+      - name: Release Linux amd64 tarball
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./hello-world-rs-${{ steps.get_version.outputs.VERSION }}-${{ env.LINUX_AMD64_TARGET }}.tar.gz
+          asset_content_type: application/gzip
+          asset_name: hello-world-rs-${{ steps.get_version.outputs.VERSION }}-${{ env.LINUX_AMD64_TARGET }}.tar.gz
+     
+
