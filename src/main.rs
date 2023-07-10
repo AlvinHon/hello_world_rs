@@ -1,4 +1,4 @@
 
 fn main() {
-  println!("hello world!");
+  println!("hello {}!", hello_world_rs::hello());
 }
