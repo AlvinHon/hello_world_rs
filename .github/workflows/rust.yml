@@ -32,6 +32,7 @@ jobs:
       uses: actions-rs/tarpaulin@v0.1
       with:
           version: '0.15.0'
+          run-types: 'Tests'
           args: '-- --test-threads 1'
           
     - name: Upload coverage reports to Codecov
