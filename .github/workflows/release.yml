@@ -16,7 +16,7 @@ env:
 jobs:
   build:
     name: Build artifacts
-    runs-on: ${{ matrix.os }}
+    runs-on: [self-hosted, linux, ARM64] #${{ matrix.os }}
     strategy:
       matrix:
         include:
@@ -86,7 +86,7 @@ jobs:
   release:
     name: GitHub Release
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, ARM64] # ubuntu-latest
     steps:
       - name: Query version number
         id: get_version
