@@ -1,6 +1,6 @@
 
 fn main() {
-  println!("hello {}!", hello_world_rs::hello());
+  println!("hello {}!", hello_world::hello());
 }
 
 #[test]
