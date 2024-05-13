@@ -6,6 +6,9 @@ edition = "2021"
 description = "Hello World!"
 license = "MIT"
 repository = "https://github.com/AlvinHon/hello_world_rs"
+exclude = [
+    ".github/*",
+]
 
 [lib]
 name = "hello_world_rs"
