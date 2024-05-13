@@ -7,7 +7,7 @@ Hello world in Rust!
 Run the binary:
 
 ```bash
-hello-world-rust
+hello-world-in-rust
 # Output: hello world!
 ```
 

@@ -1,5 +1,5 @@
 [package]
-name = "hello-world-rust"
+name = "hello-world-in-rust"
 version = "0.1.0"
 authors = ["AlvinHon"]
 edition = "2021"
@@ -15,6 +15,6 @@ name = "hello_world"
 path = "src/lib.rs"
 
 [[bin]]
-name = "hello-world-rust"
+name = "hello-world-in-rust"
 
 [dependencies]
