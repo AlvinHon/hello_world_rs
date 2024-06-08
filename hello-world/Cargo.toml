@@ -15,3 +15,11 @@ path = "src/lib.rs"
 name = "hello-world-in-rust"
 
 [dependencies]
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "hello_world"
+harness = false
+
