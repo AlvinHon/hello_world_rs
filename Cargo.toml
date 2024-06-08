@@ -1,20 +1,9 @@
-[package]
-name = "hello-world-in-rust"
-version = "0.1.0"
-authors = ["AlvinHon"]
-edition = "2021"
-description = "Hello World!"
-license = "MIT"
-repository = "https://github.com/AlvinHon/hello_world_rs"
+[workspace]
+resolver = "2"
+members = ["hello-world", "hello-world-derive"]
 exclude = [
     ".github/*",
 ]
 
-[lib]
-name = "hello_world"
-path = "src/lib.rs"
-
-[[bin]]
-name = "hello-world-in-rust"
-
-[dependencies]
+[workspace.package]
+version = "0.1.0"
