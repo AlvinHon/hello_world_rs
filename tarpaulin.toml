@@ -1,0 +1,6 @@
+[test_config]
+workspace = true
+exclude = [
+    # exclude the proc-macro library as those can not be covered in runtime test
+    "hello-world-in-rust-derive"
+]
