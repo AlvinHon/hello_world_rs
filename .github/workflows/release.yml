@@ -160,11 +160,5 @@ jobs:
           toolchain: stable
           override: true
       
-      - name: Cargo login
-        run: cargo login ${{ secrets.CRATESIO_TOKEN }}
-      
       - name: Cargo publish
-        run: cargo publish -p ${{ env.RELEASE_BIN }}
-        with:
-          post: cargo logout
-
+        run: cargo publish -p ${{ env.RELEASE_BIN }} --token ${{ secrets.CRATESIO_TOKEN }}
