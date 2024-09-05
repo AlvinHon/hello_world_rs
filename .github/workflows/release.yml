@@ -82,13 +82,6 @@ jobs:
         with:
           name: ${{ matrix.target }}
           path: ./${{ env.RELEASE_DIR }}
-      
-      - name: Publish to Crates.io
-        uses: katyo/publish-crates@v2
-        with:
-          registry-token: ${{ secrets.CRATESIO_TOKEN }}
-          path: './hello-world'
-          ignore-unpublished-changes: true
 
   release:
     name: GitHub Release
@@ -155,5 +148,16 @@ jobs:
           asset_path: ./hello-world-rs-${{ steps.get_version.outputs.VERSION }}-${{ env.MACOS_TARGET }}.tar.gz
           asset_content_type: application/gzip
           asset_name: hello-world-rs-${{ steps.get_version.outputs.VERSION }}-${{ env.MACOS_TARGET }}.tar.gz
-     
+
+  publish:
+    name: Publish to Crates.io
+    needs: release
+    runs-on: [self-hosted, linux, ARM64] # ubuntu-latest
+    steps:
+      - name: Cargo Publish
+        uses: katyo/publish-crates@v2
+        with:
+          registry-token: ${{ secrets.CRATESIO_TOKEN }}
+          path: './hello-world'
+          ignore-unpublished-changes: true     
 
