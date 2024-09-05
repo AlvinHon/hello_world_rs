@@ -82,6 +82,13 @@ jobs:
         with:
           name: ${{ matrix.target }}
           path: ./${{ env.RELEASE_DIR }}
+      
+      - name: Publish to Crates.io
+        - uses: katyo/publish-crates@v2
+        with:
+            registry-token: ${{ secrets.CRATESIO_TOKEN }}
+            path: './hello-world'
+            ignore-unpublished-changes: true
 
   release:
     name: GitHub Release
