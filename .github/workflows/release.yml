@@ -159,7 +159,7 @@ jobs:
         with:
           toolchain: stable
           override: true
-        uses: katyo/publish-crates@v2
+      - uses: katyo/publish-crates@v2
         with:
           registry-token: ${{ secrets.CRATESIO_TOKEN }}
           path: './hello-world'
