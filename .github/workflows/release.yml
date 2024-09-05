@@ -159,9 +159,8 @@ jobs:
         with:
           toolchain: stable
           override: true
-      - uses: katyo/publish-crates@v2
-        with:
-          registry-token: ${{ secrets.CRATESIO_TOKEN }}
-          path: './hello-world'
-          ignore-unpublished-changes: true     
+      - name: Cargo publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CRATESIO_TOKEN }}
+        run: cargo publish -p ${{ env.RELEASE_BIN }}
 
